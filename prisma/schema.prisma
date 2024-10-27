@@ -16,9 +16,43 @@ datasource db {
 model Service {
   id String @id @default(uuid())
 
-  name        String
-  price       Float
-  type        String
-  description String
-  status      String
+  name                String
+  price               Float
+  type                String
+  description         String
+  status              String
+  Reservation_Details Reservation_Details[]
+}
+
+model User {
+  id String @id @default(uuid())
+
+  firstName    String
+  lastName     String
+  email        String        @unique
+  rol          String
+  passwordHash String
+  Reservation  Reservation[]
+}
+
+model Reservation {
+  id                  String                @id @default(uuid())
+  userId              String
+  user                User                  @relation(fields: [userId], references: [id])
+  date                DateTime
+  status              String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  Reservation_Details Reservation_Details[]
+}
+
+model Reservation_Details {
+  reservationId String
+  serviceId     String
+  quantity      Int
+  unitPrice     Float
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  service       Service     @relation(fields: [serviceId], references: [id])
+
+  @@id([reservationId, serviceId])
 }
