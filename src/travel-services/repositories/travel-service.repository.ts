@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 import { Logger, OnModuleInit } from '@nestjs/common';
 
 export class ServiceRepository extends PrismaClient implements OnModuleInit {
-  private readonly logger = new Logger('ProductsService');
+  private readonly logger = new Logger('ServiceRepository');
 
   onModuleInit() {
     this.$connect();
