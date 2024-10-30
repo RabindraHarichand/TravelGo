@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpStatus,
   Inject,
   Injectable,
@@ -73,5 +74,18 @@ export class TravelServicesService {
       throw new NotFoundException(`Traveling Service with id ${id} not found`);
 
     return service;
+  }
+
+  async validateServices(ids: string[]): Promise<Service[]> {
+    try {
+      const services = await this.serviceRepository.validateServices(ids);
+
+      if (services.length != ids.length)
+        throw new BadRequestException('Some services were not found');
+
+      return services;
+    } catch (error) {
+      throw new BadRequestException('Some services do not exist ');
+    }
   }
 }

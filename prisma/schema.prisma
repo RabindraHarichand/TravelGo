@@ -40,6 +40,8 @@ model Reservation {
   userId              String
   user                User                  @relation(fields: [userId], references: [id])
   date                DateTime
+  totalAmount         Float
+  totalServices       Int
   status              String
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt

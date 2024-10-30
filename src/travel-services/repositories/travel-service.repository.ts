@@ -3,7 +3,8 @@ import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { ServiceStatus } from '../enum/service-status.enum';
 import { CreateServiceDto, UpdateServiceDto } from '../dto/requests';
 import { PrismaClient } from '@prisma/client';
-import { Logger, OnModuleInit } from '@nestjs/common';
+import { BadGatewayException, Logger, OnModuleInit } from '@nestjs/common';
+import { log } from 'util';
 
 export class ServiceRepository extends PrismaClient implements OnModuleInit {
   private readonly logger = new Logger('ServiceRepository');
@@ -70,5 +71,24 @@ export class ServiceRepository extends PrismaClient implements OnModuleInit {
     });
 
     return { ...service, status: service.status as unknown as ServiceStatus };
+  }
+
+  async validateServices(ids: string[]): Promise<Service[]> {
+    ids = Array.from(new Set(ids));
+
+    const services = await this.service.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+
+    return services.map((service) => {
+      return {
+        ...service,
+        status: service.status as unknown as ServiceStatus,
+      };
+    });
   }
 }
